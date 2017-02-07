@@ -10,23 +10,25 @@
 import smtplib
 import csv
 
-filereader = csv.reader(open("../test.csv"), delimiter=",")
+filereader = csv.reader(open("../your.csv"), delimiter=",")
 header = filereader.next()
 
 for FirstName, Email, CustomerName in filereader:
    print "Sending Mail to " + FirstName + " " + Email + " about " + CustomerName
    print "Formatting email to " + Email
-   sender = 'jlabocki@redhat.com'
+   sender = 'YOUREMAIL@redhat.com'
    receivers = Email 
+   message = """From: YOURNAME <YOUREMAIL@redhat.com> 
+To: %s <%s>
+Subject: %s YOURSUBJECT
 
-   message = """From: James Labocki <jlabocki@redhat.com>
-   To: To Person <%s> 
-   Subject: SMTP e-mail test
+Hello %s,
 
-   Hello %s,
+YOUR MESSAGE
 
-   This is a test e-mail message about %s.
-   """ % (Email, FirstName, CustomerName)
+Thanks
+YOURNAME
+""" % (FirstName, Email, CustomerName, FirstName)
    
    try:
       smtpObj = smtplib.SMTP('smtp.domain.com')
