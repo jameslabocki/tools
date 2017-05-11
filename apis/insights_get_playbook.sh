@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # insights_get_playbook.sh
 #
@@ -26,7 +26,7 @@ if ! type "jq" > /dev/null; then
  echo "  jq not found!"
  echo "  You'll need to install jq for this to work"
  echo "  You can get it at https://stedolan.github.io/jq/" 
- echo "  Then include it in your path via `export PATH=${PATH}:/your/path`
+ echo "  Then include it in your path via `export PATH=${PATH}:/your/path`"
  exit 1
 fi
 
