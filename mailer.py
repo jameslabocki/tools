@@ -1,38 +1,44 @@
 #!/usr/bin/python
 # This script loops over a CSV file that is formatted like so:
 #
-# FirstName, Email, CustomerName
-# Bob, bsmith@domain.com, Big Boy
+# CustomerName, FirstName, Email
+# Big Boy, Bob Smith, bboy@example.com
 # 
-# It sends a formatted email to them. You'll need to set your CSV file
+# It sends a html formatted email to them. You'll need to set your CSV file
 # below, set the smtp email server below, and customize your message
 
 import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import csv
 
-filereader = csv.reader(open("../your.csv"), delimiter=",")
-header = filereader.next()
+filereader = csv.reader(open("./your.csv"), delimiter=",")
 
-for FirstName, Email, CustomerName in filereader:
-   print "Sending Mail to " + FirstName + " " + Email + " about " + CustomerName
-   print "Formatting email to " + Email
-   sender = 'YOUREMAIL@redhat.com'
+for CustomerName, FirstName, Email in filereader:
+   print("Sending Mail to " + FirstName + " " + Email + " about " + CustomerName)
+   print("Formatting email to " + Email)
+   sender = 'sender@example'
    receivers = Email 
-   message = """From: YOURNAME <YOUREMAIL@redhat.com> 
-To: %s <%s>
-Subject: %s YOURSUBJECT
 
-Hello %s,
-
-YOUR MESSAGE
-
-Thanks
-YOURNAME
-""" % (FirstName, Email, CustomerName, FirstName)
+   message = MIMEMultipart("alternative")
+   message["From"] = "sender@example"
+   message["To"] = """ %s """ % (Email)
+   message["Cc"] = "copieduser@example.com"
+   message["Subject"] = """ %s is invited to a Christmas Party """ % (CustomerName)
+#   message["Subject"] = "subject" 
    
+   html = """\
+<html>
+Your Message Here
+</html>
+""" % (FirstName, CustomerName, CustomerName)
+
+   convert = MIMEText(html, "html")
+   message.attach(convert)
+
    try:
-      smtpObj = smtplib.SMTP('smtp.domain.com')
-      smtpObj.sendmail(sender, receivers, message)         
-      print "Successfully sent email to " + Email
-   except SMTPException:
-      print "Error: unable to send email to " + Email
+      smtpObj = smtplib.SMTP('smtp.example.com')
+      smtpObj.sendmail(sender, receivers, message.as_string())         
+      print("Successfully sent email to " + Email)
+   except BaseException:
+      print("Error: unable to send email to " + Email)
